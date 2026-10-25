@@ -1,0 +1,233 @@
+@import "tailwindcss";
+
+/* Vidomo v2 — "Graphite & Cobalt" (see docs/design-system.md)
+   60/30/10: warm-neutral paper + graphite ink dominate, cobalt brand ≈10%, amber "window light" as a rare accent.
+   Green/amber/red are reserved for meaning (verdicts, risk) — never decoration. */
+:root {
+  --bg: #f3f1ec;
+  --surface: #ffffff;
+  --surface-2: #ebe9e3;
+  --ink: #12151b;
+  --ink-2: #565c67;
+  --line: #dcd9d1;
+  --brand: #2b45d4;
+  --brand-ink: #ffffff;
+  --accent: #d98e1f;
+  --good: #1d7f53;
+  --warn: #b0700a;
+  --bad: #c2412f;
+  --info: #4d5b70;
+  --good-bg: #e2f1e9;
+  --warn-bg: #f7ecd6;
+  --bad-bg: #f8e2dd;
+  --info-bg: #e6e9ef;
+  --shadow: 0 1px 2px rgb(18 21 27 / 0.05), 0 10px 30px -14px rgb(18 21 27 / 0.22);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0d12;
+    --surface: #12151c;
+    --surface-2: #1a1e27;
+    --ink: #eef0f4;
+    --ink-2: #a2a9b6;
+    --line: #272c37;
+    --brand: #8b9bff;
+    --brand-ink: #0b0d12;
+    --accent: #f2b550;
+    --good: #4cc38a;
+    --warn: #e3a83e;
+    --bad: #f07a68;
+    --info: #9aa6ba;
+    --good-bg: #13261d;
+    --warn-bg: #2a2111;
+    --bad-bg: #2e1915;
+    --info-bg: #1b2029;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 30px -14px rgb(0 0 0 / 0.65);
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink2: var(--ink-2);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brandink: var(--brand-ink);
+  --color-accent: var(--accent);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+  --color-info: var(--info);
+  --color-goodbg: var(--good-bg);
+  --color-warnbg: var(--warn-bg);
+  --color-badbg: var(--bad-bg);
+  --color-infobg: var(--info-bg);
+  --font-sans: var(--font-sans-ui), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif-display), Georgia, serif;
+  --font-mono: var(--font-mono-data), ui-monospace, monospace;
+  --shadow-card: var(--shadow);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.display {
+  font-family: var(--font-serif);
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+}
+::selection {
+  background: color-mix(in srgb, var(--brand) 28%, transparent);
+}
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Dashed style = "missing / not evidenced" */
+.missing-box {
+  border: 1.5px dashed var(--line);
+  background: repeating-linear-gradient(135deg, transparent 0 8px, color-mix(in srgb, var(--line) 35%, transparent) 8px 9px);
+}
+
+/* Slow drifting contour lines in the hero */
+@keyframes drift {
+  from {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(-2%, 1.5%, 0) rotate(2.5deg);
+  }
+}
+.contours {
+  animation: drift 24s ease-in-out infinite alternate;
+  transform-origin: 60% 40%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .contours {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* maplibre */
+.maplibregl-map {
+  font-family: var(--font-sans);
+}
+/* essentials markers (map/map-view.tsx) */
+.vd-place {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 14px -6px rgb(0 0 0 / 0.35);
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s, color 0.2s;
+}
+.vd-place[data-active="true"] {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  transform: scale(1.25);
+  z-index: 2;
+}
+
+/* ---- print = PDF export ---- */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .no-print,
+  header[role="banner"],
+  footer[role="contentinfo"] {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .print-break {
+    break-before: page;
+  }
+  .card-print {
+    box-shadow: none !important;
+    break-inside: avoid;
+    border: 1px solid #ccc !important;
+  }
+  /* open all accordions in print */
+  details > *,
+  [data-collapsible] {
+    display: block !important;
+    height: auto !important;
+    opacity: 1 !important;
+  }
+}
+.print-only {
+  display: none;
+}
+
+/* ---- Vidomo mark animation (components/brand/mark.tsx) ---- */
+.vd-mark .vd-c,
+.vd-mark .vd-house,
+.vd-mark .vd-win {
+  transform-box: fill-box;
+}
+.vd-mark--anim .vd-c-tl { animation: vd-in-tl 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.vd-mark--anim .vd-c-tr { animation: vd-in-tr 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.vd-mark--anim .vd-c-br { animation: vd-in-br 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.vd-mark--anim .vd-c-bl { animation: vd-in-bl 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.vd-mark--anim .vd-house { stroke-dasharray: 100; animation: vd-draw 0.9s 0.25s cubic-bezier(0.65, 0, 0.35, 1) both; }
+.vd-mark--anim .vd-win { transform-origin: center; animation: vd-light 0.5s 1s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.group:hover .vd-mark .vd-win { animation: vd-flicker 0.9s ease; }
+.group:hover .vd-mark .vd-c { animation: vd-focus 0.6s ease; }
+@keyframes vd-in-tl { from { transform: translate(-4px, -4px); opacity: 0; } }
+@keyframes vd-in-tr { from { transform: translate(4px, -4px); opacity: 0; } }
+@keyframes vd-in-br { from { transform: translate(4px, 4px); opacity: 0; } }
+@keyframes vd-in-bl { from { transform: translate(-4px, 4px); opacity: 0; } }
+@keyframes vd-draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+@keyframes vd-light { from { transform: scale(0); opacity: 0; } }
+@keyframes vd-flicker { 0%, 100% { opacity: 1; } 30% { opacity: 0.2; } 45% { opacity: 1; } 60% { opacity: 0.4; } }
+@keyframes vd-focus { 50% { transform: scale(0.88); } }
+@keyframes vd-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
